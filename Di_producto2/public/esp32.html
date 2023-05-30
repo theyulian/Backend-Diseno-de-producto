@@ -1,0 +1,69 @@
+<!-- esp32.html -->
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Datos de la ESP32</title>
+        <style>
+          /* Estilos CSS aquí */
+          @import url('https://fonts.googleapis.com/css?family=Roboto');
+          body {
+            font-family: "Roboto";
+            background-color: #f2f2f2;
+          }
+          h1 {
+            color: #599;
+            text-align: center;
+          }
+          table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+          }
+          th, td, tr {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ccc;
+            text-align: center;
+          }
+          th {
+            background-color: #f9f9f9;
+          }
+        </style>
+      </head>
+<body>
+  <h1>ESP32</h1>
+  <table id="tabla-datos">
+    <thead>
+      <tr>
+        <th>Hora</th>
+        <th>Temperatura</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Los datos serán insertados aquí dinámicamente -->
+    </tbody>
+  </table>
+  <script>
+    const socket = new WebSocket('ws://localhost:8080');
+    socket.onmessage = function(event) {
+      const temperatura = event.data;
+      const tabla = document.getElementById('tabla-datos').getElementsByTagName('tbody')[0];
+      const fila = tabla.insertRow();
+
+      const celdaHora = fila.insertCell();
+      const celdaTemperatura = fila.insertCell();
+
+      
+
+      const fecha = new Date();
+      const hora = fecha.getHours() + ':' + fecha.getMinutes() + ':' + fecha.getSeconds();
+
+
+      
+      celdaTemperatura.textContent = temperatura;
+      celdaHora.textContent = hora.toString();  
+    };
+  </script>
+</body>
+</html>
