@@ -7,7 +7,7 @@ const User =require('./public/user');
 const user = require('./public/user');
 const axios = require('axios');
 const WebSocket = require('ws');
-
+const variables=require('./public/datos');
 const wss = new WebSocket.Server({ port: 8080 });
 
 app.use(bodyParser.json());
@@ -150,9 +150,27 @@ app.post('/temperatura', (req, res) => {
 
 function enviarTemperatura(temperatura) {
   // Envía la temperatura a todos los clientes conectados
+  const fecha = new Date();
+  const hora = fecha.getHours() + ':' + fecha.getMinutes() + ':' + fecha.getSeconds();
+  temperatura=temperatura.toString();
+  
+  var t={
+    Temp:temperatura,
+    Tiempo:hora
+  }
+  const tabladatos = JSON.stringify(t);
+  let register=new variables(t);
+  register.save(err=>{
+    if(err){
+      console.log("ERROR AL GUARDAR DATOS");
+    }else{
+      console.log("DATOS GUARDADOS");
+    }
+  });
+
   wss.clients.forEach(client => {
     if (client.readyState === WebSocket.OPEN) {
-      client.send(temperatura);
+      client.send(tabladatos);
     }
   });
 }

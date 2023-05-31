@@ -47,19 +47,14 @@
   <script>
     const socket = new WebSocket('ws://localhost:8080');
     socket.onmessage = function(event) {
-      const temperatura = event.data;
+      const t = JSON.parse(event.data);
+      const temperatura = t.Temp;
+      const hora = t.Tiempo;
       const tabla = document.getElementById('tabla-datos').getElementsByTagName('tbody')[0];
       const fila = tabla.insertRow();
 
       const celdaHora = fila.insertCell();
       const celdaTemperatura = fila.insertCell();
-
-      
-
-      const fecha = new Date();
-      const hora = fecha.getHours() + ':' + fecha.getMinutes() + ':' + fecha.getSeconds();
-
-
       
       celdaTemperatura.textContent = temperatura;
       celdaHora.textContent = hora.toString();  
