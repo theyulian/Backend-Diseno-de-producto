@@ -8,7 +8,10 @@ const user = require('./public/user');
 const axios = require('axios');
 const WebSocket = require('ws');
 const variables=require('./public/datos');
+const variablesExtraidas = require('./public/datos');
 const wss = new WebSocket.Server({ port: 8080 });
+const wssArray = new WebSocket.Server({ port: 8081});
+var flag = 0;
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -118,12 +121,15 @@ app.post('/register', (req, res) => {
                         function abrirVentanaEsp32() {
                           window.open('esp32.html');
                         }
+
+
                       </script>
                   </body>
                 </html>
               `;
               
               res.send(html);
+              
               }
             });
           } else {
@@ -168,12 +174,50 @@ function enviarTemperatura(temperatura) {
     }
   });
 
+
   wss.clients.forEach(client => {
     if (client.readyState === WebSocket.OPEN) {
       client.send(tabladatos);
     }
   });
 }
+
+// variablesExtraidas.find({}, 'Temp Tiempo', (err, datos) => {
+//   if (err) {
+//     console.log("ERROR AL OBTENER LOS DATOS");
+//   } else {
+//     const arregloDatos = datos.map(dato => ({
+//       temperatura: dato.Temp,
+//       hora: dato.Tiempo
+//     }));
+    
+//     wssArray.clients.forEach(client => {
+//       if (client.readyState === WebSocket.OPEN) {
+//         client.send(arregloDatos);
+//       }
+//     });
+//     console.log(arregloDatos);
+//   }
+// });
+
+app.get('/Base', (req, res) => {
+  variablesExtraidas.find({}, 'Temp Tiempo', (err, datos) => {
+    if (err) {
+      console.log("ERROR AL OBTENER LOS DATOS");
+      res.status(500).send('Error al obtener los datos');
+    } else {
+      const arregloDatos = datos.map(dato => ({
+        temperatura: dato.Temp,
+        hora: dato.Tiempo
+      }));
+      console.log(arregloDatos);
+      res.json(arregloDatos);
+
+    }
+  });
+});
+
+
 
 app.listen(5000, () => {
   console.log('Servidor iniciado en el puerto 5000');

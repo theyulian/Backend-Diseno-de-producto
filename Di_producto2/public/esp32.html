@@ -45,6 +45,25 @@
     </tbody>
   </table>
   <script>
+    fetch('/Base')
+      .then(response => response.json())
+      .then(datos => {
+        for(var i=0;i<datos.length;i++){
+          const temperatura=datos[i].temperatura;
+          const hora = datos[i].hora;
+          const tabla = document.getElementById('tabla-datos').getElementsByTagName('tbody')[0];
+          const fila = tabla.insertRow();
+
+          const celdaHora = fila.insertCell();
+          const celdaTemperatura = fila.insertCell();
+          
+          celdaTemperatura.textContent = temperatura;
+          celdaHora.textContent = hora.toString();  
+        } 
+      })
+      .catch(error => {
+        console.log('Error al obtener los datos:', error);
+      });
     const socket = new WebSocket('ws://localhost:8080');
     socket.onmessage = function(event) {
       const t = JSON.parse(event.data);
@@ -59,6 +78,23 @@
       celdaTemperatura.textContent = temperatura;
       celdaHora.textContent = hora.toString();  
     };
+    // const socket = new WebSocket('ws://localhost:8081');
+    // socket.onmessage = function(event) {
+    //   const t = JSON.parse(event.data);
+    //   for(var i=0;i<t.length();i++){
+    //     const temperatura=t[i].temperatura;
+    //     const hora = t[i].hora;
+    //     const tabla = document.getElementById('tabla-datos').getElementsByTagName('tbody')[0];
+    //     const fila = tabla.insertRow();
+
+    //     const celdaHora = fila.insertCell();
+    //     const celdaTemperatura = fila.insertCell();
+        
+    //     celdaTemperatura.textContent = temperatura;
+    //     celdaHora.textContent = hora.toString();  
+    //   }
+    // };
+
   </script>
 </body>
 </html>
